@@ -88,6 +88,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-Your Name - your.email@example.com
+Your Name - durgeshbahadursingh2003@gmail.com
 
-Project Link: [https://github.com/yourusername/SPEND-SMART](https://github.com/yourusername/SPEND-SMART)
+Project Link: [https://github.com/Georgiandurgesh/SPEND-SMART](https://github.com/Georgiandurgesh/SPEND-SMART)
