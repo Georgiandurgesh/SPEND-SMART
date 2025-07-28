@@ -62,7 +62,7 @@ const Login = () => {
       dispatch(updateLoader(60));
       await dispatch(setCredentials(res.user));
       toast.success(res.message || "Logged in successfully!");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
       toast.error(error?.data?.error || "Unexpected Internal Server Error!");

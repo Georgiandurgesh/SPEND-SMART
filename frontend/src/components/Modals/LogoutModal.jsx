@@ -16,6 +16,16 @@ import { resetCredentials } from "../../features/authenticate/authSlice";
 import { updateLoader } from "../../features/loader/loaderSlice";
 import { Logout } from "../../utils/Icons";
 
+// Clear any cached data in localStorage
+const clearAppData = () => {
+  // Clear any cached API data
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('api/')) {
+      localStorage.removeItem(key);
+    }
+  });
+};
+
 const LogoutModal = () => {
   const isOpen = useSelector((state) => state.logoutModal.isOpen);
   const dispatch = useDispatch();
@@ -23,21 +33,36 @@ const LogoutModal = () => {
   const [logout, { isLoading }] = useLogoutMutation();
 
   const handleLogout = async (e) => {
-    try {
+    if (e) {
       e.preventDefault();
+    }
 
+    try {
       dispatch(updateLoader(40));
-      const res = await logout().unwrap();
-      await dispatch(resetCredentials());
-
-      dispatch(updateLoader(60));
-      await dispatch(closeModal());
-      toast.success(res.message || "Logged out successfully!");
-
+      
+      // Clear user data from Redux
+      dispatch(resetCredentials());
+      
+      // Clear any cached data
+      clearAppData();
+      
+      // Call the logout API
+      try {
+        await logout().unwrap();
+      } catch (apiError) {
+        // Even if logout API fails, we still want to proceed with local cleanup
+        console.log('Logout API error (proceeding with cleanup):', apiError);
+      }
+      
+      // Close the modal and navigate
+      dispatch(closeModal());
       navigate("/");
+      
+      dispatch(updateLoader(80));
+      toast.success("Logged out successfully!");
     } catch (error) {
-      console.log(error);
-      toast.error(error?.data?.error || "Unexpected Internal Server Error!");
+      console.error('Logout error:', error);
+      toast.error(error?.data?.error || "An error occurred during logout");
     } finally {
       dispatch(updateLoader(100));
     }
